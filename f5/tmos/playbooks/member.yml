@@ -1,0 +1,33 @@
+---
+- name: "Configure F5: vservers and members"
+  hosts: tmos
+  connection: local
+  gather_facts: no
+
+  vars:
+
+    bigip_vserver_pool_name: http-pool-8080
+    bigip_vserver_pool_partition: Common
+    bigip_vserver_pool_state: present
+
+    bigip_vserver_node_host: 10.1.2.10
+    bigip_vserver_node_port: 8080
+    bigip_vserver_node_state: present
+
+    bigip_vserver_name: "{{ bigip_vserver_pool_name }}"
+    bigip_vserver_destination: 10.1.1.252
+    bigip_vserver_port: 8080
+    bigip_vserver_state: present
+
+  tasks:
+    - name: collect facts
+      bigip_facts:
+        include: system_info
+        server: "{{ provider.server }}"
+        server_port: "{{ provider.server_port }}"
+        user: "{{ provider.user }}"
+        password: "{{ provider.password }}"
+      register: bigip_facts
+    - name: display facts
+      debug:
+        var: bigip_facts
